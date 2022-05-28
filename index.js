@@ -90,6 +90,31 @@ const chooseRole = [
 // WHEN I choose to add an employee
 // THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
 
+const chooseEmp = [
+    {
+        type: "input",
+        message: "Enter employee's first name:",
+        name: "f_name"
+    },
+    {
+        type: "input",
+        message: "Enter employee's last name:",
+        name: "l_name"
+    },
+    {
+        type: "input",
+        message: "Enter employee's role:",
+        name: "role_id"
+    },
+    {
+        type: "input",
+        message: "Enter employee's manager:",
+        name: "mgr_id"
+    }
+
+]
+
 
 // WHEN I choose to update an employee role
 // THEN I am prompted to select an employee to update and their new role and this information is updated in the database 
+

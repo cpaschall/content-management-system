@@ -68,3 +68,4 @@ The following image demonstrates the web application's appearance and functional
 ![A table called "biographies" contains fields for "id" and "name".](./assets/image_1.png)
 
 ###  Working with a Database
+

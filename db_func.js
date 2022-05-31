@@ -1,6 +1,7 @@
 const db = require("./connection")
 // const cTable = require('console.table');
 const inquirer = require("inquirer");
+const { listenerCount } = require("./connection");
 
 class PromptsDB {
     constructor(db) {
@@ -9,23 +10,17 @@ class PromptsDB {
 
     // View All Departments
     getAllDept() {
-        this.db.query('SELECT * FROM department_db', function (err, results) {
-            console.table(results)
-        });
+        return this.db.promise().query('SELECT * FROM department_db')
     };
 
     // View All Roles
-    viewAllRoles() {
-        this.db.query('SELECT * FROM role_db', function (err, results) {
-            console.table(results)
-        });
+    getAllRoles() {
+        return this.db.promise().query('SELECT * FROM role_db')
     };
 
     // View All Employees
-    viewAllEmp() {
-        this.db.query('SELECT * FROM employee_db', function (err, results) {
-            console.table(results)
-        });
+    getAllEmp() {
+        return this.db.promise().query('SELECT employee_db.id, f_name AS First, l_name AS Last, role_db.title, department_db.dept_name, role_db.salary FROM employee_db JOIN role_db ON employee_db.mgr_id = role_db.id JOIN department_db ON role_db.dept_id = department_db.id') 
     };
 
     // Add a Department
@@ -38,7 +33,7 @@ class PromptsDB {
             }])
         .then(data => {
             let values = [data.dept]
-            db.query(`INSERT INTO role_db(dept_name) VALUES(?)`, values);
+            return db.promise().query(`INSERT INTO department_db(dept_name) VALUES(?)`, values);
         });
     };
 
@@ -62,7 +57,7 @@ class PromptsDB {
             }])
         .then(data => {
             let values = [data.title, data.salary, data.dept]
-            db.query(`INSERT INTO role_db(title, salary, dept_id) VALUES(?,?,?)`, values);
+            return db.promise().query(`INSERT INTO role_db(title, salary, dept_id) VALUES(?,?,?)`, values);
         });
     };
 
@@ -91,11 +86,21 @@ class PromptsDB {
             }])
         .then(data => {
             let values = [data.f_name, data.l_name, data.role_id, data.mgr_id]
-            db.query(`INSERT INTO role_db(f_name, l_name, role_id, mgr_id) VALUES(?,?,?,?)`, values);
+            return db.promise().query(`INSERT INTO employee_db(f_name, l_name, role_id, mgr_id) VALUES(?,?,?,?)`, values);
         });
     };
 
     // Update an Employee Role
+    updateEmp = async () => {
+        await inquirer.prompt([
+            {
+                type: listenerCount,
+                message: "Select Employee file to update:",
+                name: "empUp",
+                choice: []
+            }
+        ])
+    }
 
     // Exit Program
 };

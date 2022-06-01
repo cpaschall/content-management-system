@@ -1,12 +1,8 @@
 require('dotenv').config();
-const {DB_USER, DB_PW, DB_DB} = process.env;
-const express = require('express');
-const mysql = require('mysql2');
-// const index = require('./public/index.js');
-const cTable = require('console.table');
 const inquirer = require("inquirer");
-const f = require("./db_func.js")
-const db = require("./connection.js")
+const f = require("./helpers/db_func.js")
+const db = require("./helpers/connection.js")
+const logo = require("./helpers/logo.js")
 
 db.promise().connect(function(err) {
     if (err) throw err;
@@ -14,7 +10,6 @@ db.promise().connect(function(err) {
 })
 
 const viewAllDept = async () => {
-    // console.table(f.getAllDept())
     await f.getAllDept()
     .then(([rows]) => {
         console.table(rows)
@@ -47,7 +42,6 @@ const listRole = async () => {
 const updateEmpRole = async () => {
     let empArr = await listEmp()
     let roleArr = await listRole()
-    console.log(roleArr[0])
     await inquirer.prompt([
         {
             type: "list",
@@ -63,12 +57,11 @@ const updateEmpRole = async () => {
         }
     ])
     .then((data) => {
-        console.log(data)
-
-
+        return db.promise().query(`UPDATE employee_db SET role_id=${data.newRole} WHERE employee_db.id = ${data.empUp}`)
     });
 }
 
+// Initialize the prompts with user choices
 const init = function() {
     inquirer.prompt([{
         type: "list",
@@ -78,13 +71,13 @@ const init = function() {
     }])
     .then(data => {
         switch(data.cmsChoice) {
-            case "View All Departments": //working
+            case "View All Departments": 
                 viewAllDept()
                 .then(() => {
                     init();
                 })
                 break;
-            case "View All Roles": //working
+            case "View All Roles":
                 viewAllRoles()
                 .then(() => {
                     init();
@@ -96,19 +89,19 @@ const init = function() {
                     init();
                 })
                 break;
-            case "Add a Department": //working
+            case "Add a Department": 
                 f.addDept()
                 .then(() => {
                     init();
                 })
                 break;
-            case "Add a Role": //working
+            case "Add a Role": 
                 f.addRole()
                 .then(() => {
                     init();
                 })
                 break;
-            case "Add an Employee": //working
+            case "Add an Employee": 
                 f.addEmp()
                 .then(() => {
                     init();
@@ -120,17 +113,13 @@ const init = function() {
                     init();
                 })
                 break;
-            case "Exit":
+            case "Exit": 
                 break
 
         }
     })  
 };
 
-// init()
-updateEmpRole()
-// listEmp()
-// f.getAllRoles()
-// f.getAllDept()
-// viewAllDept()
+logo.renderLogo()
+init()
 

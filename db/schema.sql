@@ -19,10 +19,11 @@ CREATE TABLE role_db (
 
 CREATE TABLE employee_db (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    f_name VARCHAR(30) NOT NULL,                                                 
+    f_name VARCHAR(30) NOT NULL,
+    l_name VARCHAR(30) NOT NULL,                                                 
     role_id INT NOT NULL,
     mgr_id INT,
-    FOREIGN KEY (mgr_id)
-    REFERENCES role_db (id)
+    FOREIGN KEY (role_id) REFERENCES role_db(id),
+    FOREIGN KEY (mgr_id) REFERENCES employee_db(id)
     ON DELETE SET NULL
 );                                                                                                                                      

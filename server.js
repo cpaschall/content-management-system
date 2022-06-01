@@ -34,7 +34,41 @@ const viewAllEmp = async () => {
         console.table(rows)
     })
 };
-    
+
+// Update an Employee Role
+const listEmp = async () => {
+    return db.promise().query('SELECT CONCAT(emp.f_name, " ", emp.l_name) AS name, emp.id AS value FROM employee_db emp')
+};
+
+const listRole = async () => {
+    return db.promise().query('SELECT r.title AS name, r.id AS value FROM role_db r')
+};
+
+const updateEmpRole = async () => {
+    let empArr = await listEmp()
+    let roleArr = await listRole()
+    console.log(roleArr[0])
+    await inquirer.prompt([
+        {
+            type: "list",
+            message: "Select an Employee to update their role:",
+            name: "empUp",
+            choices: empArr[0]
+        },
+        {
+            type: "list",
+            message: "Choose the role for this employee:",
+            name: "newRole",
+            choices: roleArr[0]
+        }
+    ])
+    .then((data) => {
+        console.log(data)
+
+
+    });
+}
+
 const init = function() {
     inquirer.prompt([{
         type: "list",
@@ -81,7 +115,7 @@ const init = function() {
                 })
                 break;
             case "Update an Employee Role":
-                updateEmp()
+                updateEmpRole()
                 .then(() => {
                     init();
                 })
@@ -93,7 +127,9 @@ const init = function() {
     })  
 };
 
-init()
+// init()
+updateEmpRole()
+// listEmp()
 // f.getAllRoles()
 // f.getAllDept()
 // viewAllDept()

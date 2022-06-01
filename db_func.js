@@ -15,13 +15,15 @@ class PromptsDB {
 
     // View All Roles
     getAllRoles() {
-        return this.db.promise().query('SELECT * FROM role_db')
+        return this.db.promise().query('SELECT role.id AS ID, role.title AS Title, dept.dept_name AS Department, role.salary AS Salary FROM role_db role JOIN department_db dept ON role.dept_id = dept.id ORDER BY role.id')
     };
 
     // View All Employees
     getAllEmp() {
-        return this.db.promise().query('SELECT employee_db.id, f_name AS First, l_name AS Last, role_db.title, department_db.dept_name, role_db.salary FROM employee_db JOIN role_db ON employee_db.mgr_id = role_db.id JOIN department_db ON role_db.dept_id = department_db.id') 
+        return this.db.promise().query('SELECT emp.id AS ID, emp.f_name AS First, emp.l_name AS Last, role_db.title AS Title, department_db.dept_name AS Department, role_db.salary AS Salary, CONCAT(mgr.f_name, " ", mgr.l_name) AS Manager FROM employee_db emp LEFT JOIN employee_db mgr ON emp.mgr_id = mgr.id JOIN role_db ON emp.role_id = role_db.id JOIN department_db ON role_db.dept_id = department_db.id ORDER BY emp.id') 
     };
+
+    // employee_db.f_name CASE WHEN role_db = 1
 
     // Add a Department
     addDept = async () => {
@@ -91,13 +93,13 @@ class PromptsDB {
     };
 
     // Update an Employee Role
-    updateEmp = async () => {
+    updateEmpRole = async () => {
         await inquirer.prompt([
             {
-                type: listenerCount,
-                message: "Select Employee file to update:",
+                type: list,
+                message: "Select an Employee to update their role:",
                 name: "empUp",
-                choice: []
+                choices: []
             }
         ])
     }
